@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+
+
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <a href="{% url 'students' %}"></a>
+        <button type="submit" >Submit</button>
+    </form>
+
+    <script>
+
+$(document).ready(function() {
+    $("#id_college").on("change", function() {
+        const selectedCollege = $(this).val();
+        
+        $.ajax({
+            url: `/app/get_branches/?college_id=${selectedCollege}`,
+            method: "GET",
+            dataType: "json",
+            success: function(data) {
+                $("#id_branch").empty();  // Remove existing options
+                
+                // Populate branch dropdown with new data
+                $.each(data, function(index, branch) {
+                    $("#id_branch").append(new Option(branch.name, branch.id));
+                });
+
+                // Check the branch dropdown value and display accordingly
+                if ($("#id_branch").val() !== "") {
+                    $("#id_branch").show();
+                } else {
+                    $("#id_branch").hide();
+                }
+            },
+            error: function(error) {
+                console.error("Error fetching branches:", error);
+            }
+        });
+    });
+
+    // Initially hide the branch dropdown
+    $('#id_branch').hide();
+});
+
+    </script>
+    
+</body>
+</html>
